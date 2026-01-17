@@ -1,5 +1,6 @@
 // OPTIONS
 const BuffEnabled = true;
+const PricempireEnabled = true;
 
 
 console.log("SCM to 3rd party extension loaded.");
@@ -68,6 +69,81 @@ if (BuffEnabled) {
         };
     })};
 };
+
+
+//PRICEMPIRE INTEGRATION (ONLY FOR SKINS)
+if (PricempireEnabled) {
+    if (itemNamedec.includes("Factory New") || itemNamedec.includes("Minimal Wear") || itemNamedec.includes("Field-Tested") || itemNamedec.includes("Well-Worn") || itemNamedec.includes("Battle-Scarred")) {
+
+        const pricempireimgurl = chrome.runtime.getURL('scripts/images/pricempireicon.png');
+        let PricempireURL = "https://pricempire.com/cs2-items/skin/"
+        let stattrak = false;
+        let souvenir = false;
+        let condition = null;
+
+        //StatTrak check
+        if (itemNamedec.includes("StatTrak™")) {
+            stattrak = true;
+        };
+
+        //Souvenir check
+        if (itemNamedec.includes("Souvenir")) {
+            souvenir = true;
+        };
+
+        //Condition check
+        if (itemNamedec.includes("Factory New")) {
+            condition = "factory-new";
+        }
+        else if (itemNamedec.includes("Minimal Wear")) {
+            condition = "minimal-wear";
+        }
+        else if (itemNamedec.includes("Field-Tested")) {
+            condition = "field-tested";
+        }
+        else if (itemNamedec.includes("Well-Worn")) {
+            condition = "well-worn";
+        }
+        else if (itemNamedec.includes("Battle-Scarred")) {
+            condition = "battle-scarred";
+        }
+
+        //Get Weapon
+        let weaponname = itemNamedec.split(" | ")[0];
+        weaponname = weaponname.replace("StatTrak™ ", "");
+        weaponname = weaponname.replace("Souvenir ", "");
+        weaponname = weaponname.replace(" ", "-");
+        weaponname = weaponname.toLowerCase();
+
+        //Get Finish
+        let finishname = itemNamedec.split(" | ")[1];
+
+        const conditions = ["(Factory New)", "(Minimal Wear)", "(Field-Tested)", "(Well-Worn)", "(Battle-Scarred)"];
+        const re = conditions.join("|");
+        const regex = new RegExp(`\\s*\\((${re})\\)\\s*`);
+        finishname = finishname.replace(regex, "");
+
+
+        finishname = finishname.replace(" ", "-");
+        finishname = finishname.toLowerCase();
+
+        //Construct URL
+        PricempireURL += weaponname + "-" + finishname;
+        if (stattrak) {
+            PricempireURL += "?variant=stattrak" + "-" + condition;
+        }
+        if (souvenir) {
+            PricempireURL += "&variant=souvenir" + "-" + condition;
+        }
+        else if (!stattrak && !souvenir) {
+        PricempireURL += "?variant=" + condition;
+        }
+        let pricempireinsert = `<a href="${PricempireURL}" target="_blank"><img class="icons" src="${pricempireimgurl}" alt="Pricempire"></a>`;
+        whattoinsert += pricempireinsert;
+        whattoinsert += ` `;
+    }    
+};
+
 
 
 

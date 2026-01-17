@@ -42,7 +42,8 @@
       "matches": ["<all_urls>"],
       "resources": [
         "scripts/data/marketids.json",
-        "scripts/images/buff163icon.png"
+        "scripts/images/buff163icon.png",
+        "scripts/images/pricempireicon.png"
       ]
     }
   ]
